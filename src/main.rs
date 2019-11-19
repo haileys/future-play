@@ -1,10 +1,10 @@
-mod waker;
+mod coro;
 
-use waker::{Coro, Chan};
+use coro::{Coro, Chan};
 
-async fn coro(mut chan: Chan) -> i32 {
-    let a = chan.recv().await;
-    let b = chan.recv().await;
+async fn coro(mut chan: Chan<i32>) -> f64 {
+    let a = chan.recv().await as f64;
+    let b = chan.recv().await as f64;
     a + b
 }
 
