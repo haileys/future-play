@@ -1,9 +1,10 @@
+use core::future::Future;
+use core::pin::Pin;
+use core::ptr;
+use core::task::{Context, Waker, RawWaker, RawWakerVTable, Poll};
+
 use std::cell::RefCell;
-use std::future::Future;
-use std::pin::Pin;
-use std::ptr;
 use std::rc::Rc;
-use std::task::{Context, Waker, RawWaker, RawWakerVTable, Poll};
 
 mod methods {
     use std::task::RawWaker;
@@ -39,13 +40,13 @@ pub struct Chan<T> {
 }
 
 impl<T> Chan<T> {
-    pub fn recv(&mut self) -> ChanRecv<'_, T> {
+    pub fn recv(&self) -> ChanRecv<'_, T> {
         ChanRecv { chan: self }
     }
 }
 
 pub struct ChanRecv<'a, T> {
-    chan: &'a mut Chan<T>,
+    chan: &'a Chan<T>,
 }
 
 impl<'a, T> Future for ChanRecv<'a, T> {

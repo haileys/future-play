@@ -1,10 +1,18 @@
+mod both;
 mod coro;
 
+use both::both;
 use coro::{Coro, Chan};
 
+#[inline(never)]
+async fn do_recv(chan: &Chan<i32>) -> f64 {
+    let val = chan.recv().await as f64;
+    // panic!("whoops!");
+    val
+}
+
 async fn coro(mut chan: Chan<i32>) -> f64 {
-    let a = chan.recv().await as f64;
-    let b = chan.recv().await as f64;
+    let (a, b) = both(do_recv(&chan), do_recv(&chan)).await;
     a + b
 }
 
